@@ -40,9 +40,9 @@ public class csvLoader {
         String line;
         while((line = rssi_reader.readLine()) != null){
             String[] linex = line.split(",");
-            int rx = Integer.parseInt(linex[0]);
-            int tx = Integer.parseInt(linex[1]);
-            int rssi = Integer.parseInt(linex[2]);
+            int rx = Integer.parseInt(linex[0].trim());
+            int tx = Integer.parseInt(linex[1].trim());
+            int rssi = Integer.parseInt(linex[2].trim());
             
             destination.add(rx, tx, rssi);
             

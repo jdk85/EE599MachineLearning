@@ -6,9 +6,11 @@
 package rssi_mapping;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
@@ -31,7 +33,7 @@ public class RSSI_Mapping extends javax.swing.JFrame {
 	private final String save_settings = root_directory + "Utilities" + File.separator + "RssiMappingSettings.save";
 	
     
-    private String rssi_filename, loc_filename, lookup_filename;
+    private String rssi_filename, loc_filename, lookup_filename, map_filename;
     
     private RSSI_Data rssi;
     private NodeLocations locs;
@@ -49,15 +51,22 @@ public class RSSI_Mapping extends javax.swing.JFrame {
             rssi_filename = root_directory + "CSVs" + File.separator + reader.readLine();            
             loc_filename = root_directory + "CSVs" + File.separator + reader.readLine();
             lookup_filename = root_directory + "CSVs" + File.separator + reader.readLine();
+            map_filename = root_directory + "images" + File.separator + reader.readLine();
             reader.close();
         } catch (IOException ex) {
-        	ex.printStackTrace();
             rssi_filename = "";
             loc_filename = "";
             lookup_filename = "";
+            map_filename = "";
         }
         
         initComponents();
+        
+        try {
+            RoomLookUpMap map = new RoomLookUpMap(map_filename);
+        } catch (IOException ex) {
+            Error_text.setText("Error: Room map not found");
+        }
 
         fileChooser.setCurrentDirectory(new java.io.File("."));
     }
@@ -300,13 +309,61 @@ public class RSSI_Mapping extends javax.swing.JFrame {
             loader.ReadRSSI(rssi_filename_text.getText(), rssi);
             //System.out.println(rssi.toString());
         } catch (FileNotFoundException ex) {
-            Error_text.setText("Error:File Not Found - RSSI");
+            Error_text.setText("Error: File Not Found - RSSI");
             return;
         } catch (IOException ex) {
             Error_text.setText("Error: Could not read RSSI data");
             return;
         }
         
+        //read in which nodes to find
+        String[] nodesToFind = nodesToFind_text.getText().split(",");
+        if (nodesToFind_text.getText().equals("")) nodesToFind = new String[0];
+        int[] nodes_to_find = new int[nodesToFind.length];
+        for (int i = 0; i < nodesToFind.length; i++){
+            try {
+                nodes_to_find[i] = Integer.parseInt(nodesToFind[i].trim());
+            } catch(Exception e) {
+                Error_text.setText("Error: Nodes must me integer values");
+                return;
+            }
+        }
+        
+        //output error if no nodes to find
+        if (nodes_to_find.length <= 0) {
+            Error_text.setText("Error: Must enter at least one node to find");
+            return;
+        }
+        
+        //output error if nodes to find is not a valid node number
+        for (int i = 0; i < nodes_to_find.length; i++){
+            if (nodes_to_find[i] < 0 || nodes_to_find[i] > num_nodes){
+                Error_text.setText("Error: Must enter a valid node number");
+                return;
+            }
+        }
+        
+        //output error if operational mode and invalid input
+        if (Mode_Button.getText().equals("Operational Mode")){
+            String[] knownNodes = knownNodes_text.getText().split(",");
+            int[] known_nodes = new int[knownNodes.length];
+            for (int i = 0; i < known_nodes.length; i++)
+                known_nodes[i] = Integer.parseInt(knownNodes[i].trim());
+
+            for (int find = 0; find < nodes_to_find.length; find++){
+                for (int known = 0; known < known_nodes.length; known++){
+                    if (nodes_to_find[find] == known_nodes[known]){
+                        Error_text.setText("Error: Cannot find a node that is already known in operational mode");
+                        return;
+                    }
+                }
+            }
+            
+            Run_Operational(nodes_to_find);
+        } else
+            Run_Test(nodes_to_find);
+        
+        Save_Settings();
         
     }//GEN-LAST:event_run_buttonActionPerformed
 
@@ -422,4 +479,25 @@ public class RSSI_Mapping extends javax.swing.JFrame {
     private javax.swing.JTextField rssi_filename_text;
     private javax.swing.JButton run_button;
     // End of variables declaration//GEN-END:variables
+    
+    private void Run_Operational(int[] nodes_to_find) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void Run_Test(int[] nodes_to_find) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void Save_Settings() {
+        String settings = rssi_filename +"\n"+ loc_filename +"\n"+ lookup_filename +"\n"+ map_filename;
+        try {
+          File file = new File(save_settings);
+          BufferedWriter output = new BufferedWriter(new FileWriter(file));
+          output.write(settings);
+          output.close();
+        } catch ( IOException e ) {
+          Error_text.setText("Error: Could not write to file");
+        }
+    }
+
 }

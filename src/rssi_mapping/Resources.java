@@ -42,9 +42,9 @@ public class Resources {
         String line;
         while((line = reader.readLine()) != null){
             String[] linex = line.split(",");
-            int color = Integer.parseInt(linex[0]);
+            int color = Integer.parseInt(linex[0].trim());
             String name = linex[1];
-            Point loc = new Point(Integer.parseInt(linex[2]), Integer.parseInt(linex[3]));
+            Point loc = new Point(Integer.parseInt(linex[2].trim()), Integer.parseInt(linex[3].trim()));
             
             Room room = new Room(name, loc, color);
             
