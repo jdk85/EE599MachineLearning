@@ -11,6 +11,7 @@ import java.util.ArrayList;
  *
  * @author atd43
  */
+@Deprecated
 public class Location {
     
     public String loc;

@@ -9,6 +9,7 @@ package rssi_mapping;
  *
  * @author atd43
  */
+@Deprecated
 public class LocList {
     
     Node first;

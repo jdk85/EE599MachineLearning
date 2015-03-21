@@ -14,6 +14,7 @@ public class NodeLocations {
     private int num_nodes;
     private LocList[] locs;
     
+    @Deprecated
     public NodeLocations(int nodes){
         num_nodes = nodes;
         locs = new LocList[num_nodes];
