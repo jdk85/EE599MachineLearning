@@ -14,6 +14,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -21,17 +22,19 @@ import javax.swing.JFileChooser;
  */
 public class RSSI_Mapping extends javax.swing.JFrame {
 
-	/**
-	 * Generated serializable version ID - required when class 
-	 * is serializable
-	 */
-	private static final long serialVersionUID = 1083808740418053965L;
+    /**
+     * Generated serializable version ID - required when class 
+     * is serializable
+     */
+    private static final long serialVersionUID = 1083808740418053965L;
+    /** Stores the current running directory */
+    private final String root_directory;
+    /** Stores the directory for the saved settings file*/
+    private final String save_settings;
 	
-	//Get the current directory where the file is being run
-	private static String root_directory = (new File(".").getAbsolutePath()).toString().replace(".", "");
-	
-	private final String save_settings = root_directory + "Utilities" + File.separator + "RssiMappingSettings.save";
-	
+    /** Stores the operating mode of the program */
+    private String program_mode;
+    
     
     private String rssi_filename, loc_filename, lookup_filename, map_filename;
     
@@ -46,6 +49,9 @@ public class RSSI_Mapping extends javax.swing.JFrame {
      * Creates new form RSSI_Mapping
      */
     public RSSI_Mapping() {
+        this.root_directory = (new File(".").getAbsolutePath()).replace(".", "");
+        this.save_settings = root_directory + "Utilities" + File.separator + "RssiMappingSettings.save";
+        
         try {
             BufferedReader reader = new BufferedReader(new FileReader(save_settings));
             rssi_filename = root_directory + "CSVs" + File.separator + reader.readLine();            
@@ -62,10 +68,14 @@ public class RSSI_Mapping extends javax.swing.JFrame {
         
         initComponents();
         
+        //Initialize the default program mode
+        this.program_mode = mode_combobox.getSelectedItem().toString();
+        
         try {
             RoomLookUpMap map = new RoomLookUpMap(map_filename);
         } catch (IOException ex) {
             Error_text.setText("Error: Room map not found");
+            JOptionPane.showMessageDialog(null, "Error: Room map not found", "Alert", JOptionPane.ERROR_MESSAGE);
         }
 
         fileChooser.setCurrentDirectory(new java.io.File("."));
@@ -81,7 +91,6 @@ public class RSSI_Mapping extends javax.swing.JFrame {
     private void initComponents() {
 
         fileChooser = new javax.swing.JFileChooser();
-        Mode_Button = new javax.swing.JToggleButton();
         filename_label = new javax.swing.JLabel();
         rssi_filename_text = new javax.swing.JTextField();
         rssiFileBrowse_button = new javax.swing.JButton();
@@ -94,6 +103,8 @@ public class RSSI_Mapping extends javax.swing.JFrame {
         UnknownNode_label = new javax.swing.JLabel();
         knownNodes_text = new javax.swing.JTextField();
         nodesToFind_text = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        mode_combobox = new javax.swing.JComboBox();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem6 = new javax.swing.JMenuItem();
@@ -109,17 +120,7 @@ public class RSSI_Mapping extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("RSSI Mapping");
         setBounds(new java.awt.Rectangle(100, 100, 500, 500));
-        setMaximumSize(new java.awt.Dimension(1920, 1080));
         setMinimumSize(new java.awt.Dimension(500, 200));
-
-        Mode_Button.setText("Operational Mode");
-        Mode_Button.setMaximumSize(new java.awt.Dimension(125, 25));
-        Mode_Button.setMinimumSize(new java.awt.Dimension(125, 25));
-        Mode_Button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Mode_ButtonActionPerformed(evt);
-            }
-        });
 
         filename_label.setText("File containing the RSSI data:");
 
@@ -169,6 +170,15 @@ public class RSSI_Mapping extends javax.swing.JFrame {
 
         UnknownNode_label.setText("Node Locations to Find:");
 
+        jLabel1.setText("Program Mode: ");
+
+        mode_combobox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Test Mode", "Operational Mode", "Algorithm Test" }));
+        mode_combobox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mode_comboboxActionPerformed(evt);
+            }
+        });
+
         jMenu1.setText("File");
 
         jMenuItem6.setText("Open Building Map");
@@ -205,38 +215,41 @@ public class RSSI_Mapping extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(Error_text))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(rssi_filename_text)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(rssiFileBrowse_button, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(loc_filename_text)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(locFileBrowse_button, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(run_button, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(Error_text))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(filename_label)
-                                    .addComponent(filename_label2)
-                                    .addComponent(KnownNodes_label)
-                                    .addComponent(knownNodes_text, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(rssi_filename_text)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(nodesToFind_text, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(UnknownNode_label)))
+                                .addComponent(rssiFileBrowse_button, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(run_button)
+                                .addComponent(loc_filename_text)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(Mode_Button, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 247, Short.MAX_VALUE)))
-                .addContainerGap())
+                                .addComponent(locFileBrowse_button, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(filename_label)
+                                            .addComponent(filename_label2)
+                                            .addComponent(KnownNodes_label)
+                                            .addComponent(knownNodes_text, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(nodesToFind_text, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(UnknownNode_label)))
+                                    .addComponent(jLabel1)
+                                    .addComponent(mode_combobox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 247, Short.MAX_VALUE)))
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -261,27 +274,20 @@ public class RSSI_Mapping extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(knownNodes_text, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(nodesToFind_text, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(mode_combobox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(run_button)
-                    .addComponent(Mode_Button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
+                .addComponent(run_button, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
                 .addComponent(Error_text))
         );
 
-        Mode_Button.getAccessibleContext().setAccessibleName("Mode_Button");
         filename_label.getAccessibleContext().setAccessibleName("filename_label");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void Mode_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Mode_ButtonActionPerformed
-        if (Mode_Button.getText().equals("Operational Mode")){
-            Mode_Button.setText("Test Mode");
-        }else{
-            Mode_Button.setText("Operational Mode");
-        }
-    }//GEN-LAST:event_Mode_ButtonActionPerformed
 
     private void run_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_run_buttonActionPerformed
         //make sure the locations were entered correctly
@@ -296,9 +302,11 @@ public class RSSI_Mapping extends javax.swing.JFrame {
             resources = new Resources(lookup_filename);
         } catch (FileNotFoundException ex) {
             Error_text.setText("Error: File Not Found - Lookup");
+            JOptionPane.showMessageDialog(null, "Error: File not found \n" + lookup_filename, "Alert", JOptionPane.ERROR_MESSAGE);
             return;
         } catch (IOException ex) {
-            Error_text.setText("Error: Could not read lookup data");
+            Error_text.setText("Error: Could not read lookup data");            
+            JOptionPane.showMessageDialog(null, "Error: could not read lookup data", "Alert", JOptionPane.ERROR_MESSAGE);
             return;
         }
         
@@ -310,9 +318,12 @@ public class RSSI_Mapping extends javax.swing.JFrame {
             //System.out.println(rssi.toString());
         } catch (FileNotFoundException ex) {
             Error_text.setText("Error: File Not Found - RSSI");
+            JOptionPane.showMessageDialog(null, "Error: File not found \n" + rssi_filename, "Alert", JOptionPane.ERROR_MESSAGE);
+            
             return;
         } catch (IOException ex) {
             Error_text.setText("Error: Could not read RSSI data");
+            JOptionPane.showMessageDialog(null, "Error: Could not read RSSI data", "Alert", JOptionPane.ERROR_MESSAGE);
             return;
         }
         
@@ -324,7 +335,8 @@ public class RSSI_Mapping extends javax.swing.JFrame {
             try {
                 nodes_to_find[i] = Integer.parseInt(nodesToFind[i].trim());
             } catch(Exception e) {
-                Error_text.setText("Error: Nodes must me integer values");
+                Error_text.setText("Error: Nodes must be integer values");
+                JOptionPane.showMessageDialog(null, "Error: Nodes must be integer values", "Alert", JOptionPane.ERROR_MESSAGE);
                 return;
             }
         }
@@ -332,6 +344,7 @@ public class RSSI_Mapping extends javax.swing.JFrame {
         //output error if no nodes to find
         if (nodes_to_find.length <= 0) {
             Error_text.setText("Error: Must enter at least one node to find");
+            JOptionPane.showMessageDialog(null, "Error: Must enter at least one node to find","Alert", JOptionPane.ERROR_MESSAGE);
             return;
         }
         
@@ -339,12 +352,13 @@ public class RSSI_Mapping extends javax.swing.JFrame {
         for (int i = 0; i < nodes_to_find.length; i++){
             if (nodes_to_find[i] < 0 || nodes_to_find[i] > num_nodes){
                 Error_text.setText("Error: Must enter a valid node number");
+                JOptionPane.showMessageDialog(null, "Error: Must enter a valid node number","Alert", JOptionPane.ERROR_MESSAGE);
                 return;
             }
         }
         
         //output error if operational mode and invalid input
-        if (Mode_Button.getText().equals("Operational Mode")){
+        if (program_mode.equals("Operational Mode")){
             String[] knownNodes = knownNodes_text.getText().split(",");
             int[] known_nodes = new int[knownNodes.length];
             for (int i = 0; i < known_nodes.length; i++)
@@ -354,6 +368,7 @@ public class RSSI_Mapping extends javax.swing.JFrame {
                 for (int known = 0; known < known_nodes.length; known++){
                     if (nodes_to_find[find] == known_nodes[known]){
                         Error_text.setText("Error: Cannot find a node that is already known in operational mode");
+                        JOptionPane.showMessageDialog(null, "Error: Cannot find a node that is already known in operational mode","Alert", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
                 }
@@ -404,8 +419,10 @@ public class RSSI_Mapping extends javax.swing.JFrame {
             knownNodes_text.setText(locs.getKnown());
         } catch (FileNotFoundException ex) {
             Error_text.setText("Error: File Not Found - Locations");
+            JOptionPane.showMessageDialog(null, "Error: File not found \n" + loc_filename, "Alert", JOptionPane.ERROR_MESSAGE);
         } catch (IOException ex) {
             Error_text.setText("Error: Could not read location data");
+            JOptionPane.showMessageDialog(null, "Error: Could not read location data", "Alert", JOptionPane.ERROR_MESSAGE);
         }
     }
     
@@ -416,6 +433,11 @@ public class RSSI_Mapping extends javax.swing.JFrame {
     private void loc_filename_textKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_loc_filename_textKeyReleased
         load_locs();
     }//GEN-LAST:event_loc_filename_textKeyReleased
+
+    private void mode_comboboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mode_comboboxActionPerformed
+        //Set the program mode variable equal to the selection
+        this.program_mode = mode_combobox.getSelectedItem().toString();
+    }//GEN-LAST:event_mode_comboboxActionPerformed
 
     /**
      * @param args the command line arguments
@@ -455,11 +477,11 @@ public class RSSI_Mapping extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Error_text;
     private javax.swing.JLabel KnownNodes_label;
-    private javax.swing.JToggleButton Mode_Button;
     private javax.swing.JLabel UnknownNode_label;
     private javax.swing.JFileChooser fileChooser;
     private javax.swing.JLabel filename_label;
     private javax.swing.JLabel filename_label2;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -474,20 +496,26 @@ public class RSSI_Mapping extends javax.swing.JFrame {
     private javax.swing.JTextField knownNodes_text;
     private javax.swing.JButton locFileBrowse_button;
     private javax.swing.JTextField loc_filename_text;
+    private javax.swing.JComboBox mode_combobox;
     private javax.swing.JTextField nodesToFind_text;
     private javax.swing.JButton rssiFileBrowse_button;
     private javax.swing.JTextField rssi_filename_text;
     private javax.swing.JButton run_button;
     // End of variables declaration//GEN-END:variables
     
-    private void Run_Operational(int[] nodes_to_find) {
+    private void Run_Operational(int[] nodes_to_find) {  
+        
+        JOptionPane.showMessageDialog(null, "Operational Mode not yet supported","Alert", JOptionPane.ERROR_MESSAGE);
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     private void Run_Test(int[] nodes_to_find) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    private void Run_Algorithm_Test(int[] nodes_to_find) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     private void Save_Settings() {
         String settings = rssi_filename +"\n"+ loc_filename +"\n"+ lookup_filename +"\n"+ map_filename;
         try {
@@ -497,6 +525,7 @@ public class RSSI_Mapping extends javax.swing.JFrame {
           output.close();
         } catch ( IOException e ) {
           Error_text.setText("Error: Could not write to file");
+          JOptionPane.showMessageDialog(null, "Error: Could not write to file", "Alert", JOptionPane.ERROR_MESSAGE);
         }
     }
 
