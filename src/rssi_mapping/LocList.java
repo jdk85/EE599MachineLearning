@@ -25,7 +25,7 @@ public class LocList {
         if (first == null){
             first = new Node(location, null);
             return;
-        } 
+        } //end if
                 
         Node node = first;
         Node prev = null;
@@ -34,15 +34,15 @@ public class LocList {
             if (node.location.equals(location)){
                 prev.next = new Node(new Location(location.loc, location.prob+node.location.prob), node.next);
                 return;
-            }
+            } //end if
             
             prev = node;
             node = node.next;
-        }
+        } //end while
         
         node.next = new Node(location, null);
         first = sort();
-    }
+    } //end public void add
     
     private void remove(Location location){
         Node node = first;
@@ -55,14 +55,14 @@ public class LocList {
                 } else {
                     prev.next = node.next;
                     node.next = null;
-                }
+                } //end else
                 return;
-            }
+            } //end if
             
             prev = node;
             node = node.next;
-        }
-    }
+        } //end while
+    } //end private void remove
     
     private Node sort(){
         Node split = null;
@@ -80,11 +80,11 @@ public class LocList {
                 last = max;
                 if (split == null) split = max;
                 remove(max.location);
-            }
-        }
+            } //end while
+        } //end while
         
         return split;
-    }
+    } //end private Node
     
     class Node{
         Location location;
@@ -93,12 +93,12 @@ public class LocList {
         public Node(Location location, Node next){
             this.location = location;
             this.next = next;
-        }
+        } //end public Node
         
         public String toString(){
             return location.toString();
-        }
-    }
+        } //end public String
+    } //end class Node
     
     public String toString(){
         String print = "";
@@ -106,8 +106,8 @@ public class LocList {
         while(node != null){
             print += node.toString() + "\n";
             node = node.next;
-        }
+        } //end while
         
         return print;
-    }
-}
+    } //end public String
+}//end public class LocList
