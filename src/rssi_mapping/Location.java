@@ -35,5 +35,5 @@ public class Location {
     //for searching purposes
     public boolean equals(Location other){
         return this.loc.equals(other.loc);
-    }
-}
+    } 
+} //end public class Location
