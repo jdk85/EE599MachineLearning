@@ -3,12 +3,17 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file://EGRSHARES/Homes/NAU-STUDENTS/atd43/Documents/NetBeansProjects/RSSI_Mapping/src/rssi_mapping/Location.java</file>
-            <file>file://EGRSHARES/Homes/NAU-STUDENTS/atd43/Documents/NetBeansProjects/RSSI_Mapping/src/rssi_mapping/RSSI_Mapping.java</file>
-            <file>file://EGRSHARES/Homes/NAU-STUDENTS/atd43/Documents/NetBeansProjects/RSSI_Mapping/src/rssi_mapping/NodeLocations.java</file>
-            <file>file://EGRSHARES/Homes/NAU-STUDENTS/atd43/Documents/NetBeansProjects/RSSI_Mapping/src/rssi_mapping/csvLoader.java</file>
-            <file>file://EGRSHARES/Homes/NAU-STUDENTS/atd43/Documents/NetBeansProjects/RSSI_Mapping/src/rssi_mapping/RSSI_Data.java</file>
-            <file>file://EGRSHARES/Homes/NAU-STUDENTS/atd43/Documents/NetBeansProjects/RSSI_Mapping/src/rssi_mapping/LocList.java</file>
+            <file>file://EGRSHARES/Homes/NAU-STUDENTS/jdk85/NAU%20SPRING%202015/EE599%20-%20Machine%20Learning/EE599%20Netbeans%20Workspace/EE599MachineLearning/src/rssi_mapping/RoomLookUpMap.java</file>
+            <file>file://EGRSHARES/Homes/NAU-STUDENTS/jdk85/NAU%20SPRING%202015/EE599%20-%20Machine%20Learning/EE599%20Netbeans%20Workspace/EE599MachineLearning/CSVs/lookup_v2.csv</file>
+            <file>file://EGRSHARES/Homes/NAU-STUDENTS/jdk85/NAU%20SPRING%202015/EE599%20-%20Machine%20Learning/EE599%20Netbeans%20Workspace/EE599MachineLearning/src/rssi_mapping/Resources.java</file>
+            <file>file://EGRSHARES/Homes/NAU-STUDENTS/jdk85/NAU%20SPRING%202015/EE599%20-%20Machine%20Learning/EE599%20Netbeans%20Workspace/EE599MachineLearning/src/rssi_mapping/LocList.java</file>
+            <file>file://EGRSHARES/Homes/NAU-STUDENTS/jdk85/NAU%20SPRING%202015/EE599%20-%20Machine%20Learning/EE599%20Netbeans%20Workspace/EE599MachineLearning/images/EngineeringBuildingMap_allRoomsAndHallways_NoBack.png</file>
+            <file>file://EGRSHARES/Homes/NAU-STUDENTS/jdk85/NAU%20SPRING%202015/EE599%20-%20Machine%20Learning/EE599%20Netbeans%20Workspace/EE599MachineLearning/src/rssi_mapping/IntersectsToRooms.java</file>
+            <file>file://EGRSHARES/Homes/NAU-STUDENTS/jdk85/NAU%20SPRING%202015/EE599%20-%20Machine%20Learning/EE599%20Netbeans%20Workspace/EE599MachineLearning/src/rssi_mapping/RSSI_Mapping.java</file>
+            <file>file://EGRSHARES/Homes/NAU-STUDENTS/jdk85/NAU%20SPRING%202015/EE599%20-%20Machine%20Learning/EE599%20Netbeans%20Workspace/EE599MachineLearning/CSVs/lookup.csv</file>
+            <file>file://EGRSHARES/Homes/NAU-STUDENTS/jdk85/NAU%20SPRING%202015/EE599%20-%20Machine%20Learning/EE599%20Netbeans%20Workspace/EE599MachineLearning/images/rooms.png</file>
+            <file>file://EGRSHARES/Homes/NAU-STUDENTS/jdk85/NAU%20SPRING%202015/EE599%20-%20Machine%20Learning/EE599%20Netbeans%20Workspace/EE599MachineLearning/src/rssi_mapping/RSSI_Data.java</file>
+            <file>file://EGRSHARES/Homes/NAU-STUDENTS/jdk85/NAU%20SPRING%202015/EE599%20-%20Machine%20Learning/EE599%20Netbeans%20Workspace/EE599MachineLearning/src/rssi_mapping/MappingFunctions.java</file>
         </group>
     </open-files>
 </project-private>
